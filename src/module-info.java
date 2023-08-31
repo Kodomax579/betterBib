@@ -1,0 +1,9 @@
+/**
+ * 
+ */
+/**
+ * @author engel
+ *
+ */
+module betterBib {
+}
