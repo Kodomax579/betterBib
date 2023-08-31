@@ -6,4 +6,5 @@
  *
  */
 module betterBib {
+	requires java.sql;
 }
