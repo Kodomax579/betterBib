@@ -1,5 +1,7 @@
 package Login;
 
+import static javax.swing.JOptionPane.showMessageDialog;
+
 import java.awt.EventQueue;
 import java.awt.Font;
 
@@ -7,8 +9,16 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import main.MySQL;
+
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
+import javax.swing.JButton;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SignUp_GUI extends JFrame {
 
@@ -18,6 +28,12 @@ public class SignUp_GUI extends JFrame {
 	private JTextField username;
 	private JTextField iban;
 	private JPasswordField password;
+	
+	private String Firstname;
+	private String Lastname;
+	private String Username;
+	private String IBAN;
+	private String Password;
 
 	/**
 	 * Launch the application.
@@ -88,5 +104,50 @@ public class SignUp_GUI extends JFrame {
 		password = new JPasswordField();
 		password.setBounds(421, 278, 207, 31);
 		contentPane.add(password);
+		
+		JButton btnNewButton = new JButton("Accept");
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) 
+			{
+				
+				
+				if (firstname.getText().isEmpty() || lastname.getText().isEmpty() || password.getText().isEmpty()
+						|| username.getText().isEmpty() || iban.getText().isEmpty()) 
+					{
+						showMessageDialog(null, "Write in every box");
+					} else{
+
+						Firstname = firstname.getText();
+						Lastname = lastname.getText();
+						Username = username.getText();
+						String Password =String.valueOf(password.getPassword());
+						IBAN = iban.getText();
+						String ibanPattern = "^(?i)([A-Z]{2}\\d{2})(\\s?\\d{4}){4}(\\s?\\d{1,4})?$";
+						
+						Pattern ibanpattern = Pattern.compile(ibanPattern);
+						Matcher ibanmatcher = ibanpattern.matcher(IBAN);
+							
+						if(ibanmatcher.matches())
+						{
+							if (MySQL.InsertNewUser(Firstname, Lastname, Username, Password, IBAN)) {
+								
+						        Login_GUI Login = new Login_GUI();
+						        Login.setVisible(true);
+						        dispose();
+						    } else {
+						        showMessageDialog(null, "This Account already exists");
+						    }
+						}
+						else
+						{
+							showMessageDialog(null, "IBAN is wrong");
+						}
+				}
+			}
+		});
+		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnNewButton.setBounds(286, 395, 164, 34);
+		contentPane.add(btnNewButton);
 	}
 }
