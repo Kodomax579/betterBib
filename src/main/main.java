@@ -1,5 +1,7 @@
 package main;
 
+import Login.Login_GUI;
+
 public class main {
 
 	public static void main(String[] args) {
@@ -11,7 +13,8 @@ public class main {
 			
 			
 			
-			//LOGIN(erste seite)
+			Login_GUI Login = new Login_GUI();
+			Login.setVisible(true);
 			
 			
 			

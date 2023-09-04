@@ -1,17 +1,24 @@
 package Login;
 
+import static javax.swing.JOptionPane.showMessageDialog;
+
 import java.awt.*;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import main.MySQL;
+
 import javax.swing.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Login_GUI extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField username;
-	private JTextField password;
+	private JPasswordField password;
 
 	/**
 	 * Launch the application.
@@ -49,18 +56,42 @@ public class Login_GUI extends JFrame {
 		contentPane.add(username);
 		username.setColumns(10);
 		
-		password = new JTextField();
-		password.setColumns(10);
-		password.setBounds(484, 271, 207, 34);
-		contentPane.add(password);
-		
 		JButton btnNewButton = new JButton("Sign in");
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) 
+			{
+				String Username = username.getText();
+				String Password =String.valueOf(password.getPassword());
+				if(MySQL.Login(Username,Password))
+				{
+					dispose();
+				}
+				else
+				{
+					showMessageDialog(null, "Wrong Password or Username");
+				}
+			}
+		});
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnNewButton.setBounds(277, 373, 169, 34);
 		contentPane.add(btnNewButton);
 		
 		JButton btnNewButton_1 = new JButton("Sign up");
+		btnNewButton_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) 
+			{
+				SignUp_GUI Signup = new SignUp_GUI();
+				Signup.setVisible(true);
+				dispose();
+			}
+		});
 		btnNewButton_1.setBounds(602, 382, 89, 23);
 		contentPane.add(btnNewButton_1);
+		
+		password = new JPasswordField();
+		password.setBounds(484, 271, 207, 31);
+		contentPane.add(password);
 	}
 }
