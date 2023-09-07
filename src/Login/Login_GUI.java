@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import Menue.Menue_GUI;
 import main.MySQL;
 
 import javax.swing.*;
@@ -63,9 +64,28 @@ public class Login_GUI extends JFrame {
 			{
 				String Username = username.getText();
 				String Password =String.valueOf(password.getPassword());
-				if(MySQL.Login(Username,Password))
+				int login = MySQL.Login(Username,Password);
+				if(login>0)
 				{
-					dispose();
+					int isAdmin=MySQL.isAdmin(Username,Password);
+					System.out.println(isAdmin);
+					switch(isAdmin)
+					{
+					case 0:
+						Menue_GUI Menue = new Menue_GUI(login);
+						Menue.setVisible(true);	
+						dispose();
+						break;
+					case 1:
+						//menue für admin
+						break;
+					case 2:
+						//Menue für Oberadmin
+						break;
+					default:
+						showMessageDialog(null, "Something went wrong");
+					}
+					
 				}
 				else
 				{
