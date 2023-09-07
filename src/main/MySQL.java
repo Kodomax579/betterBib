@@ -1,7 +1,11 @@
 package main;
 
 import java.sql.*;
-import java.util.ArrayList;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.util.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter; 
 
 public class MySQL {
 	private static final String host= "localhost";
@@ -11,6 +15,7 @@ public class MySQL {
 	private static final String password ="";
 	
 	public static Connection con;
+	
 	
 	
 	public static boolean isConnected()
@@ -161,7 +166,7 @@ public class MySQL {
 			PreparedStatement ps;
 			
 			try {
-				ps = con.prepareStatement("SELECT titel,author,ISBN,genre,discription  FROM book WHERE ID = ?");
+				ps = con.prepareStatement("SELECT titel,author,ISBN,genre,discription,customer_ID  FROM book WHERE ID = ?");
 				ps.setInt(1, id);
 				
 				ResultSet result = ps.executeQuery();
@@ -174,6 +179,7 @@ public class MySQL {
 					book.add(result.getString("ISBN"));
 					book.add(result.getString("genre"));
 					book.add(result.getString("discription"));
+					book.add(result.getString("customer_ID"));
 				}
 				return book;
 				
@@ -182,6 +188,53 @@ public class MySQL {
 				e.printStackTrace();
 			}
 			return null;
+	}
+	public static boolean lend(int BookiD,int loginID) 
+	{
+		LocalDate currentDate = LocalDate.now();
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+		String formattedDate = currentDate.format(formatter);
+		PreparedStatement ps;
+		try {
+		ps = con.prepareStatement("UPDATE book SET customer_ID = ?, date_borrow=? WHERE ID = ?");
+		ps.setInt(1, loginID);
+		ps.setString(2, formattedDate);
+		ps.setInt(3, BookiD);
+		ps.executeUpdate();
+		
+		return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	public static boolean historyBorrow(int BookiD,int loginID)
+	{
+		{
+			LocalDate currentDate = LocalDate.now();
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			String formattedDate = currentDate.format(formatter);
+			PreparedStatement ps;
+			try {
+			ps = con.prepareStatement("INSERT INTO `borrowed`( `borrowed`, `customer_ID`, `Book_ID`) VALUES (?,?,?)");
+			ps.setString(1, formattedDate);
+			ps.setInt(2, loginID);
+			ps.setInt(3, BookiD);
+			
+			ps.executeUpdate();
+			
+			return true;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return false;
+		}
 	}
 	
 }
