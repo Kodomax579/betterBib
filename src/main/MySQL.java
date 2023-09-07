@@ -1,6 +1,7 @@
 package main;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class MySQL {
 	private static final String host= "localhost";
@@ -63,7 +64,7 @@ public class MySQL {
 	    return false;
 	}
 
-	public static boolean Login(String username, String password)
+	public static int Login(String username, String password)
 	{
 		PreparedStatement ps;
 		
@@ -76,18 +77,111 @@ public class MySQL {
 			
 			if(result.next())
 			{
-				return true;
+				
+				String id= result.getString("ID");
+				int ID= Integer.parseInt(id);
+				return ID;
 			}
 			else
 			{
-				return false;
+				return 0;
 			}
 		
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return false;
+		return 0;
+	}
+	public static ArrayList<String> ListOfBooks()
+	{
+		ArrayList<String> books = new ArrayList<>();
+		
+		PreparedStatement ps;
+		
+		try {
+			ps = con.prepareStatement("SELECT ID,titel,author,ISBN,genre,customer_ID FROM book");
+			
+			ResultSet result = ps.executeQuery();
+			
+			
+			while(result.next())
+			{
+				books.add(result.getString("ID"));
+				books.add(result.getString("titel"));
+				books.add(result.getString("author"));
+				books.add(result.getString("ISBN"));
+				books.add(result.getString("genre"));
+				books.add(result.getString("customer_ID"));
+			}
+			return books;
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+		
+		
+	}
+	public static int isAdmin(String username2, String password2) {
+		// TODO Auto-generated method stub
+			PreparedStatement ps;
+		
+		try {
+			ps = con.prepareStatement("SELECT * FROM `customer` WHERE username = ? AND password = ? ");
+			ps.setString(1, username2);
+			ps.setString(2, password2);
+			
+			ResultSet result = ps.executeQuery();
+			if(result.next())
+			{
+				
+				String position= result.getString("position");
+				int Position= Integer.parseInt(position);
+				return Position;
+			}
+			else
+			{
+				return -1;
+			}
+		
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	
+	public static ArrayList<String> singleBookData(int id)
+	{
+		
+			ArrayList<String> book = new ArrayList<>();
+			
+			PreparedStatement ps;
+			
+			try {
+				ps = con.prepareStatement("SELECT titel,author,ISBN,genre,discription  FROM book WHERE ID = ?");
+				ps.setInt(1, id);
+				
+				ResultSet result = ps.executeQuery();
+				
+				
+				if(result.next())
+				{
+					book.add(result.getString("titel"));
+					book.add(result.getString("author"));
+					book.add(result.getString("ISBN"));
+					book.add(result.getString("genre"));
+					book.add(result.getString("discription"));
+				}
+				return book;
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
 	}
 	
 }
