@@ -40,7 +40,7 @@ public class singleBook_GUI extends JFrame {
 	 * Create the frame.
 	 * @param login 
 	 */
-	public singleBook_GUI(int ID, int login) {
+	public singleBook_GUI(int ID, int login,int seite) {
 
 		ArrayList<String> array = MySQL.singleBookData(ID);
 		String title = array.get(0);
@@ -127,9 +127,11 @@ public class singleBook_GUI extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) 
 			{
-				Menue_GUI menue = new Menue_GUI(login);
-				menue.setVisible(true);
-				dispose();
+				
+					Menue_GUI menue = new Menue_GUI(login);
+					menue.setVisible(true);
+					dispose();
+				
 			}
 		});
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -162,6 +164,7 @@ public class singleBook_GUI extends JFrame {
 						Menue_GUI menue = new Menue_GUI(login);
 						menue.setVisible(true);
 						dispose();
+						
 					}
 				}
 				else {
