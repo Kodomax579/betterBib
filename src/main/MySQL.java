@@ -236,5 +236,73 @@ public class MySQL {
 			return false;
 		}
 	}
+	public static ArrayList<String> getLendBook(int customerID)
+	{
+		PreparedStatement ps;
+		
+		ArrayList<String> book = new ArrayList<>();
+		
+		try {
+			ps=con.prepareStatement("SELECT ID,titel,author,ISBN,genre FROM book WHERE customer_ID=?");
+			ps.setInt(1, customerID);
+			ResultSet result = ps.executeQuery();
+			while(result.next())
+			{
+				book.add(result.getString("ID"));
+				book.add(result.getString("titel"));
+				book.add(result.getString("author"));
+				book.add(result.getString("ISBN"));
+				book.add(result.getString("genre"));
+			}
+			return book;
+		}catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
+	public static boolean ReturnBook(int rowData) {
+		
+		PreparedStatement ps;
+		try {
+			ps= con.prepareStatement("UPDATE book SET customer_ID = ?, date_borrow=? WHERE ID = ?");
+			ps.setString(1,null);
+			ps.setString(2,null);
+			ps.setInt(3, rowData);
+			ps.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	public static boolean historyReturn(int BookiD,int loginID)
+	{
+		{
+			LocalDate currentDate = LocalDate.now();
+
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			String formattedDate = currentDate.format(formatter);
+			PreparedStatement ps;
+			try {
+			ps = con.prepareStatement("INSERT INTO `borrowed`( `returned`, `customer_ID`, `Book_ID`) VALUES (?,?,?)");
+			ps.setString(1, formattedDate);
+			ps.setInt(2, loginID);
+			ps.setInt(3, BookiD);
+			
+			ps.executeUpdate();
+			
+			return true;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return false;
+		}
+	}
 	
 }
