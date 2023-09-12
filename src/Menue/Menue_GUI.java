@@ -46,9 +46,10 @@ public class Menue_GUI extends JFrame {
 	/**
 	 * Create the frame.
 	 * @param login 
+	 * @param position 
 	 */
     
-	public Menue_GUI(int login) {
+	public Menue_GUI(int login, int position) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 500);
 		contentPane = new JPanel();
@@ -110,7 +111,7 @@ public class Menue_GUI extends JFrame {
 		            String id = table.getValueAt(row, 0).toString();
 		            int ID = Integer.parseInt(id);
 		         
-		           singleBook_GUI singleBook = new singleBook_GUI(ID,login,1);
+		           singleBook_GUI singleBook = new singleBook_GUI(ID,login,position);
 		           singleBook.setVisible(true);
 		           dispose();
 		        }
@@ -122,7 +123,7 @@ public class Menue_GUI extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) 
 			{
-				Return_GUI Return = new Return_GUI(login);
+				Return_GUI Return = new Return_GUI(login,position);
 				Return.setVisible(true);
 				dispose();
 			}
@@ -132,6 +133,16 @@ public class Menue_GUI extends JFrame {
 		contentPane.add(btnNewButton);
 		
 		JButton btnNewButton_1 = new JButton("Edit Profil");
+		btnNewButton_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) 
+			{
+				Update_GUI update = new Update_GUI(login, position);
+				update.setVisible(true);
+				dispose();
+				
+			}
+		});
 		btnNewButton_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnNewButton_1.setBounds(584, 133, 190, 37);
 		contentPane.add(btnNewButton_1);

@@ -2,6 +2,7 @@ package Menue;
 
 import static javax.swing.JOptionPane.showMessageDialog;
 
+import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -20,19 +21,22 @@ import java.util.ArrayList;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
+import java.awt.Color;
 
 
 
-public class Return_GUI extends JFrame {
+public class AdminMeneu_GUI extends JFrame {
 
 	private JPanel contentPane;
 	private JTable table;
+	private JTable table_1;
 
-	String[] columnNames = {"ID","Bookname", "Autor", "ISBN", "Genre"};
+	String[] columnNames = {"ID","Bookname", "Autor", "ISBN", "Genre","Available"};
     String Titel;
     String Autor;
     String ISBN;
     String Genre;
+    String customer_ID;
 	String id;
     
 	/**
@@ -42,9 +46,10 @@ public class Return_GUI extends JFrame {
 	/**
 	 * Create the frame.
 	 * @param login 
+	 * @param position 
 	 */
     
-	public Return_GUI(int login, int position) {
+	public AdminMeneu_GUI(int login, int position) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 500);
 		contentPane = new JPanel();
@@ -53,7 +58,7 @@ public class Return_GUI extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("Return");
+		JLabel lblNewLabel = new JLabel("Menue");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblNewLabel.setBounds(342, 11, 64, 37);
 		contentPane.add(lblNewLabel);
@@ -63,6 +68,7 @@ public class Return_GUI extends JFrame {
 		contentPane.add(scrollPane);
 		
 		table = new JTable();
+		table.setEnabled(false);
 		scrollPane.setViewportView(table);
 		DefaultTableModel model = new DefaultTableModel();
 		
@@ -71,19 +77,25 @@ public class Return_GUI extends JFrame {
 		
 		try {
 			
-		    ArrayList<String> allBook = MySQL.getLendBook(login);
+		    ArrayList<String> allBook = MySQL.ListOfBooks();
 		    int i = allBook.size();
 
-		    for (int j = 0; j < i / 5; j++) {
-		    	id = allBook.get(j * 5 );
-		        Titel = allBook.get(j * 5 +1 );
-		        Autor = allBook.get(j * 5 + 2);
-		        ISBN = allBook.get(j * 5 + 3);
-		        Genre = allBook.get(j * 5 + 4);
-		        
+		    for (int j = 0; j < i / 6; j++) {
+		    	id = allBook.get(j * 6 );
+		        Titel = allBook.get(j * 6 +1 );
+		        Autor = allBook.get(j * 6 + 2);
+		        ISBN = allBook.get(j * 6 + 3);
+		        Genre = allBook.get(j * 6 + 4);
+		        customer_ID = allBook.get(j * 6 + 5);
 
-		        
-		       model.addRow(new Object[]{id,Titel, Autor, ISBN, Genre});
+		        if(customer_ID == null)
+		        {
+		        	customer_ID = "Available";
+		        }
+		        else {
+		        	customer_ID ="Not Available";
+		        }
+		       model.addRow(new Object[]{id,Titel, Autor, ISBN, Genre,customer_ID});
 		    }
 		    
 
@@ -98,71 +110,65 @@ public class Return_GUI extends JFrame {
 		            int row = table.rowAtPoint(pnt);
 		            String id = table.getValueAt(row, 0).toString();
 		            int ID = Integer.parseInt(id);
-		              singleBook_GUI singleBook = new singleBook_GUI(ID,login, ID);
+		         
+		           singleBook_GUI singleBook = new singleBook_GUI(ID,login, position);
 		           singleBook.setVisible(true);
 		           dispose();
 		        }
 		    }
 		});
 		
-		JButton btnNewButton = new JButton("Back");
+		JButton btnNewButton = new JButton("Return book");
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) 
 			{
-				if(position == 0)
-				{
-					Menue_GUI menue = new Menue_GUI(login,position);
-					menue.setVisible(true);
-					dispose();
-				}
-				if(position == 1)
-				{
-					AdminMeneu_GUI menue = new AdminMeneu_GUI(login, position);
-					menue.setVisible(true);
-					dispose();
-				}
-				if(position == 2)
-				{
-					//Ultra admin
-				}
-				
+				Return_GUI Return = new Return_GUI(login, position);
+				Return.setVisible(true);
+				dispose();
 			}
 		});
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		btnNewButton.setBounds(584, 395, 190, 37);
+		btnNewButton.setBounds(584, 68, 190, 37);
 		contentPane.add(btnNewButton);
 		
-		JButton btnNewButton_1 = new JButton("Confirm");
+		JButton btnNewButton_1 = new JButton("Edit Profil");
 		btnNewButton_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) 
 			{
-				int rowselected = table.getSelectedRow();
-				String rowData = table.getValueAt(rowselected, 0).toString();
-				int RowData = Integer.parseInt(rowData);
-				
-				if(MySQL.ReturnBook(RowData))
-				{
-					System.out.println("drin");
-					MySQL.historyReturn(RowData, login);
-					Return_GUI Return1 = new Return_GUI(login, position);
-					dispose();
-					Return1.setVisible(true);
-					showMessageDialog(null, "You returned the book");
-				}
-				else
-				{
-					showMessageDialog(null, "Select a book");
-				}
-				
+				Update_GUI update = new Update_GUI(login, position);
+				update.setVisible(true);
+				dispose();
 				
 			}
 		});
-		
 		btnNewButton_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		btnNewButton_1.setBounds(584, 66, 190, 37);
+		btnNewButton_1.setBounds(584, 133, 190, 37);
 		contentPane.add(btnNewButton_1);
+		
+		JButton btnNewButton_1_1 = new JButton("New Book");
+		btnNewButton_1_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) 
+			{
+				NewBook_GUI2 newbook = new NewBook_GUI2(login, position);
+				newbook.setVisible(true);
+				dispose();
+			}
+		});
+		btnNewButton_1_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnNewButton_1_1.setBounds(584, 198, 190, 37);
+		contentPane.add(btnNewButton_1_1);
+		
+		JButton btnNewButton_1_2 = new JButton("Delete Book");
+		btnNewButton_1_2.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnNewButton_1_2.setBounds(584, 259, 190, 37);
+		contentPane.add(btnNewButton_1_2);
+		
+		JButton btnNewButton_1_3 = new JButton("Customer Profiles");
+		btnNewButton_1_3.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnNewButton_1_3.setBounds(584, 322, 190, 37);
+		contentPane.add(btnNewButton_1_3);
 	}
-	
 }

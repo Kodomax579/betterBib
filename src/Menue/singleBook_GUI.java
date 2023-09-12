@@ -40,7 +40,7 @@ public class singleBook_GUI extends JFrame {
 	 * Create the frame.
 	 * @param login 
 	 */
-	public singleBook_GUI(int ID, int login,int seite) {
+	public singleBook_GUI(int ID, int login, int position) {
 
 		ArrayList<String> array = MySQL.singleBookData(ID);
 		String title = array.get(0);
@@ -124,14 +124,27 @@ public class singleBook_GUI extends JFrame {
 		
 		JButton btnNewButton = new JButton("Back");
 		btnNewButton.addMouseListener(new MouseAdapter() {
+			
 			@Override
 			public void mouseClicked(MouseEvent e) 
 			{
-				
-					Menue_GUI menue = new Menue_GUI(login);
+				System.out.println(login);
+				if(position == 0)
+				{
+					Menue_GUI menue = new Menue_GUI(login,position);
 					menue.setVisible(true);
 					dispose();
-				
+				}
+				if(position == 1)
+				{
+					AdminMeneu_GUI menue = new AdminMeneu_GUI(login, position);
+					menue.setVisible(true);
+					dispose();
+				}
+				if(position == 2)
+				{
+					//Ultra admin
+				}
 			}
 		});
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -161,7 +174,7 @@ public class singleBook_GUI extends JFrame {
 					{
 						MySQL.historyBorrow(ID, login);
 						showMessageDialog(null, "You Borrowed the book");
-						Menue_GUI menue = new Menue_GUI(login);
+						Menue_GUI menue = new Menue_GUI(login, position);
 						menue.setVisible(true);
 						dispose();
 						
