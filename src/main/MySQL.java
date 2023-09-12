@@ -129,14 +129,13 @@ public class MySQL {
 		
 		
 	}
-	public static int isAdmin(String username2, String password2) {
+	public static int isAdmin(int login) {
 		// TODO Auto-generated method stub
 			PreparedStatement ps;
 		
 		try {
-			ps = con.prepareStatement("SELECT * FROM `customer` WHERE username = ? AND password = ? ");
-			ps.setString(1, username2);
-			ps.setString(2, password2);
+			ps = con.prepareStatement("SELECT position FROM `customer` WHERE ID = ?");
+			ps.setInt(1, login);
 			
 			ResultSet result = ps.executeQuery();
 			if(result.next())
@@ -273,7 +272,6 @@ public class MySQL {
 			ps.executeUpdate();
 			return true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -303,6 +301,54 @@ public class MySQL {
 			}
 			return false;
 		}
+	}
+	
+	public static boolean update_leser(String data, String Variable, int id) {
+	    
+        PreparedStatement ps;
+       
+        try {
+        	
+            String sql = "UPDATE customer SET " + Variable + " = ? WHERE ID = ?";
+            ps = con.prepareStatement(sql);
+            ps.setString(1, data);
+            ps.setInt(2, id);
+            int result = ps.executeUpdate();
+            return result>0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    return false;
+}
+	public static boolean InsertBook(String title, String discription, String author, String genre, String isbn) {
+
+		PreparedStatement ps;
+		
+		LocalDate currentDate = LocalDate.now();
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+		String formattedDate = currentDate.format(formatter);
+		
+		try {
+			ps = con.prepareStatement("INSERT INTO `book`(`titel`, `author`, `ISBN`, `discription`, `date_added`, `date_updated`, `genre`) VALUES (?,?,?,?,?,?,?)");
+			ps.setString(1, title);
+			ps.setString(2, author);
+			ps.setString(3, isbn);
+			ps.setString(4, discription);
+			ps.setString(5, formattedDate);
+			ps.setString(6, formattedDate);
+			ps.setString(7, genre);
+			
+			  int rowsInserted = ps.executeUpdate();
+		       return rowsInserted > 0;
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return false;
 	}
 	
 }
