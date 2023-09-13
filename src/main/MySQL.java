@@ -350,5 +350,120 @@ public class MySQL {
 		
 		return false;
 	}
+	public static boolean DeleteBook(int rowData) {
+
+		PreparedStatement ps;
+		try {
+			ps= con.prepareStatement("DELETE FROM book WHERE ID=?");
+			ps.setInt(1,rowData);
+			ps.execute();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	public static ArrayList<String> listOfUsers() {
+
+
+		ArrayList<String> user = new ArrayList<>();
+		
+		PreparedStatement ps;
+		
+		try {
+			ps = con.prepareStatement("SELECT ID,firstname,lastname,username FROM customer");
+			
+			ResultSet result = ps.executeQuery();
+			
+			
+			while(result.next())
+			{
+				user.add(result.getString("ID"));
+				user.add(result.getString("firstname"));
+				user.add(result.getString("lastname"));
+				user.add(result.getString("username"));
+			}
+			return user;
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public static ArrayList<String> SingleUserData(int iD) {
+		ArrayList<String> user = new ArrayList<>();
+		
+		PreparedStatement ps;
+		
+		try {
+			ps = con.prepareStatement("SELECT firstname,lastname,username,position,IBAN FROM customer WHERE ID = ?");
+			ps.setInt(1, iD);
+			
+			ResultSet result = ps.executeQuery();
+			
+			
+			if(result.next())
+			{
+				user.add(result.getString("firstname"));
+				user.add(result.getString("lastname"));
+				user.add(result.getString("username"));
+				user.add(result.getString("position"));
+				user.add(result.getString("IBAN"));
+			}
+			return user;
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public static boolean DeleteUser(int iD) {
+
+		PreparedStatement ps;
+		try {
+			ps= con.prepareStatement("DELETE FROM customer WHERE ID=?");
+			ps.setInt(1,iD);
+			ps.execute();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	public static boolean ToAdmin(int iD) {
+
+		PreparedStatement ps;
+		try {
+			ps= con.prepareStatement("Update customer SET position = ? WHERE ID = ?");
+			ps.setInt(1,1);
+			ps.setInt(2,iD);
+			ps.execute();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	public static boolean ToCustomer(int iD) {
+
+		PreparedStatement ps;
+		try {
+			ps= con.prepareStatement("Update customer SET position = ? WHERE ID = ?");
+			ps.setInt(1,0);
+			ps.setInt(2,iD);
+			ps.execute();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
 	
 }

@@ -135,15 +135,11 @@ public class singleBook_GUI extends JFrame {
 					menue.setVisible(true);
 					dispose();
 				}
-				if(position == 1)
+				if(position == 1|| position ==2)
 				{
 					AdminMeneu_GUI menue = new AdminMeneu_GUI(login, position);
 					menue.setVisible(true);
 					dispose();
-				}
-				if(position == 2)
-				{
-					//Ultra admin
 				}
 			}
 		});

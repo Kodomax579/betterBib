@@ -23,7 +23,7 @@ import javax.swing.JButton;
 
 
 
-public class Return_GUI extends JFrame {
+public class DeleteBook_GUI extends JFrame {
 
 	private JPanel contentPane;
 	private JTable table;
@@ -34,7 +34,7 @@ public class Return_GUI extends JFrame {
     String ISBN;
     String Genre;
 	String id;
-    
+    String customer_ID;
 	/**
 	 * Launch the application.
 	 */
@@ -44,7 +44,7 @@ public class Return_GUI extends JFrame {
 	 * @param login 
 	 */
     
-	public Return_GUI(int login, int position) {
+	public DeleteBook_GUI(int login, int position) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 500);
 		contentPane = new JPanel();
@@ -53,9 +53,9 @@ public class Return_GUI extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("Return");
+		JLabel lblNewLabel = new JLabel("Delete Book");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblNewLabel.setBounds(342, 11, 64, 37);
+		lblNewLabel.setBounds(310, 11, 168, 37);
 		contentPane.add(lblNewLabel);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -69,28 +69,34 @@ public class Return_GUI extends JFrame {
 		model.setColumnIdentifiers(columnNames);
 		table.setModel(model);
 		
-		try {
+			try {
 			
-		    ArrayList<String> allBook = MySQL.getLendBook(login);
+		    ArrayList<String> allBook = MySQL.ListOfBooks();
 		    int i = allBook.size();
 
-		    for (int j = 0; j < i / 5; j++) {
-		    	id = allBook.get(j * 5 );
-		        Titel = allBook.get(j * 5 +1 );
-		        Autor = allBook.get(j * 5 + 2);
-		        ISBN = allBook.get(j * 5 + 3);
-		        Genre = allBook.get(j * 5 + 4);
-		        
+		    for (int j = 0; j < i / 6; j++) {
+		    	id = allBook.get(j * 6 );
+		        Titel = allBook.get(j * 6 +1 );
+		        Autor = allBook.get(j * 6 + 2);
+		        ISBN = allBook.get(j * 6 + 3);
+		        Genre = allBook.get(j * 6 + 4);
+		        customer_ID = allBook.get(j * 6 + 5);
 
-		        
-		       model.addRow(new Object[]{id,Titel, Autor, ISBN, Genre});
+		        if(customer_ID == null)
+		        {
+		        	customer_ID = "Available";
+		        }
+		        else {
+		        	customer_ID ="Not Available";
+		        }
+		       model.addRow(new Object[]{id,Titel, Autor, ISBN, Genre,customer_ID});
 		    }
 		    
 
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}
-		
+
 		JButton btnNewButton = new JButton("Back");
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override
@@ -108,6 +114,8 @@ public class Return_GUI extends JFrame {
 					menue.setVisible(true);
 					dispose();
 				}
+				
+				
 			}
 		});
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -123,14 +131,13 @@ public class Return_GUI extends JFrame {
 				String rowData = table.getValueAt(rowselected, 0).toString();
 				int RowData = Integer.parseInt(rowData);
 				
-				if(MySQL.ReturnBook(RowData))
+				if(MySQL.DeleteBook(RowData))
 				{
 					System.out.println("drin");
-					MySQL.historyReturn(RowData, login);
-					Return_GUI Return1 = new Return_GUI(login, position);
+					DeleteBook_GUI Return1 = new DeleteBook_GUI(login, position);
 					dispose();
 					Return1.setVisible(true);
-					showMessageDialog(null, "You returned the book");
+					showMessageDialog(null, "You deleted the book");
 				}
 				else
 				{

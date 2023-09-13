@@ -83,7 +83,9 @@ public class Login_GUI extends JFrame {
 						dispose();
 						break;
 					case 2:
-						//Menue für Oberadmin
+						AdminMeneu_GUI AdminMenue1 = new AdminMeneu_GUI(login,Position);
+						AdminMenue1.setVisible(true);
+						dispose();
 						break;
 					default:
 						showMessageDialog(null, "Something went wrong");

@@ -162,11 +162,29 @@ public class AdminMeneu_GUI extends JFrame {
 		contentPane.add(btnNewButton_1_1);
 		
 		JButton btnNewButton_1_2 = new JButton("Delete Book");
+		btnNewButton_1_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) 
+			{
+				DeleteBook_GUI DeleteBook = new DeleteBook_GUI(login, position);
+				DeleteBook.setVisible(true);
+				dispose();
+			}
+		});
 		btnNewButton_1_2.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnNewButton_1_2.setBounds(584, 259, 190, 37);
 		contentPane.add(btnNewButton_1_2);
 		
 		JButton btnNewButton_1_3 = new JButton("Customer Profiles");
+		btnNewButton_1_3.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) 
+			{
+				EditProfiles_GUI EditProfiles = new EditProfiles_GUI(login, position);
+				EditProfiles.setVisible(true);
+				dispose();
+			}
+		});
 		btnNewButton_1_3.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnNewButton_1_3.setBounds(584, 322, 190, 37);
 		contentPane.add(btnNewButton_1_3);
