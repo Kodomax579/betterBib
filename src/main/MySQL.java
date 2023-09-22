@@ -22,118 +22,19 @@ public class MySQL {
 		return(con == null ? false : true);
 	}
 	public static void connect() throws ClassNotFoundException {
-	    if (!isConnected()) {
-	        try {
-	        	Class.forName("com.mysql.cj.jdbc.Driver");
-	            con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/", username, password);
-	            System.out.println("[MySQL] verbunden");
-
-	         // Ändern Sie die Datenbank
-	            Statement statement = con.createStatement();
-	            statement.execute("USE libary");
-
-	            
-	            // Überprüfen, ob die Datenbank existiert
-	            String checkDBSQL = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?";
-	            
-	            try (PreparedStatement checkDBStatement = con.prepareStatement(checkDBSQL)) {
-	                checkDBStatement.setString(1, database);
-	                ResultSet resultSet = checkDBStatement.executeQuery();
-	            
-	                if (!resultSet.next()) {
-	                    // Die Datenbank existiert nicht, also erstellen Sie sie
-	                	String createDatabaseSQL = "CREATE DATABASE IF NOT EXISTS libary;";
-
-	                	String createTableBookSQL = "CREATE TABLE `book` (\r\n"
-	                	        + "  `ID` int(11) NOT NULL,\r\n"
-	                	        + "  `titel` varchar(30) NOT NULL,\r\n"
-	                	        + "  `author` varchar(30) NOT NULL,\r\n"
-	                	        + "  `ISBN` varchar(17) NOT NULL,\r\n"
-	                	        + "  `discription` mediumtext NOT NULL,\r\n"
-	                	        + "  `date_added` date NOT NULL,\r\n"
-	                	        + "  `date_updated` date NOT NULL,\r\n"
-	                	        + "  `date_borrow` date DEFAULT NULL,\r\n"
-	                	        + "  `genre` varchar(20) NOT NULL,\r\n"
-	                	        + "  `customer_ID` int(5) DEFAULT NULL\r\n"
-	                	        + ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
-
-	                	String createTableBorrowedSQL = "CREATE TABLE `borrowed` (\r\n"
-	                	        + "  `ID` int(11) NOT NULL,\r\n"
-	                	        + "  `borrowed` date DEFAULT NULL,\r\n"
-	                	        + "  `returned` date DEFAULT NULL,\r\n"
-	                	        + "  `customer_ID` int(11) NOT NULL,\r\n"
-	                	        + "  `Book_ID` int(11) NOT NULL\r\n"
-	                	        + ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
-
-	                	String createTableCustomerSQL = "CREATE TABLE `customer` (\r\n"
-	                	        + "  `ID` int(11) NOT NULL,\r\n"
-	                	        + "  `firstname` varchar(30) NOT NULL,\r\n"
-	                	        + "  `lastname` varchar(30) NOT NULL,\r\n"
-	                	        + "  `username` varchar(30) NOT NULL,\r\n"
-	                	        + "  `password` varchar(30) NOT NULL,\r\n"
-	                	        + "  `position` int(11) NOT NULL,\r\n"
-	                	        + "  `IBAN` varchar(30) NOT NULL\r\n"
-	                	        + ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
-
-	                	String alterTableBookSQL = "ALTER TABLE `book`\r\n"
-	                	        + "  ADD PRIMARY KEY (`ID`),\r\n"
-	                	        + "  ADD KEY `customer_book` (`customer_ID`);";
-
-	                	String alterTableBorrowedSQL = "ALTER TABLE `borrowed`\r\n"
-	                	        + "  ADD PRIMARY KEY (`ID`),\r\n"
-	                	        + "  ADD KEY `customer_borrowed` (`customer_ID`),\r\n"
-	                	        + "  ADD KEY `book_borrowed` (`Book_ID`);";
-
-	                	String alterTableCustomerSQL = "ALTER TABLE `customer`\r\n"
-	                	        + "  ADD PRIMARY KEY (`ID`);";
-
-	                	String modifyAutoIncrementSQL = "ALTER TABLE `book`\r\n"
-	                	        + "  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;";
-
-	                	String modifyAutoIncrementSQL2 = "ALTER TABLE `borrowed`\r\n"
-	                	        + "  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;";
-
-	                	String modifyAutoIncrementSQL3 = "ALTER TABLE `customer`\r\n"
-	                	        + "  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;";
-
-	                	String addForeignKeySQL = "ALTER TABLE `book`\r\n"
-	                	        + "  ADD CONSTRAINT `customer_book` FOREIGN KEY (`customer_ID`) REFERENCES `customer` (`ID`);";
-
-	                	try (Statement createDBStatement = con.createStatement()) {
-	                	    createDBStatement.executeUpdate(createDatabaseSQL);
-	                	    System.out.println("Datenbank erstellt: " + database);
-
-	                	    // Verwenden Sie die Datenbank
-	                	    createDBStatement.executeUpdate("USE libary;");
-	                	    
-	                	    // Erstellen Sie Tabellen
-	                	    createDBStatement.executeUpdate(createTableBookSQL);
-	                	    createDBStatement.executeUpdate(createTableBorrowedSQL);
-	                	    createDBStatement.executeUpdate(createTableCustomerSQL);
-
-	                	    // Ändern Sie Tabellen
-	                	    createDBStatement.executeUpdate(alterTableBookSQL);
-	                	    createDBStatement.executeUpdate(alterTableBorrowedSQL);
-	                	    createDBStatement.executeUpdate(alterTableCustomerSQL);
-
-	                	    // Ändern Sie die AUTO_INCREMENT-Einstellungen
-	                	    createDBStatement.executeUpdate(modifyAutoIncrementSQL);
-	                	    createDBStatement.executeUpdate(modifyAutoIncrementSQL2);
-	                	    createDBStatement.executeUpdate(modifyAutoIncrementSQL3);
-
-	                	    // Fügen Sie Fremdschlüssel hinzu
-	                	    createDBStatement.executeUpdate(addForeignKeySQL);
-
-	                	    System.out.println("Tabellen erstellt und bearbeitet.");
-	                	}
-
-
-	                }
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	    }
+		if(!isConnected())
+		{
+			try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			
+				con = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, username , password );
+				System.out.println("[MySQL] verbunden");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
 	}
 
 	public static void disconnect(){
